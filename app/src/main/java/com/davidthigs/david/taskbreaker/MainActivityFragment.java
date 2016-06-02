@@ -4,7 +4,9 @@ import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
@@ -32,11 +34,20 @@ public class MainActivityFragment extends ListFragment {
        taskAdapter = new TaskAdapter(getActivity(), taskList.getList());
 
         setListAdapter(taskAdapter);
-
+        registerForContextMenu(getListView());
     }
     public void refreshList(){
         taskAdapter.notifyDataSetChanged();
     }
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo)
+    {
+        super.onCreateContextMenu(menu,v,menuInfo);
+
+        MenuInflater menuInflater = getActivity().getMenuInflater();
+        menuInflater.inflate(R.menu.long_press_menu,menu);
+    }
+
     @Override
     public void onListItemClick(ListView listView,View v, int position,long id){
         super.onListItemClick(listView,v,position,id);
@@ -59,28 +70,6 @@ public class MainActivityFragment extends ListFragment {
 
 
     }
-    /*
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data){
-        super.onActivityResult(requestCode,resultCode,data);
-
-        if(requestCode == MainActivity.TASK_REQUEST_CODE){
-
-            if(resultCode == MainActivity.RESULT_OK){
-                ArrayList<Task> children = (ArrayList<Task>)data.getSerializableExtra(MainActivity.TASK_OBJECT_EXTRA);
-                taskAdapter.getItem(pos).setChildren(children);
-
-                taskAdapter.notifyDataSetChanged();
-            }
-        }
-
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_main, container, false);
-    }
-    */
+    //TODO add context menu to delete and edit task info
 
 }

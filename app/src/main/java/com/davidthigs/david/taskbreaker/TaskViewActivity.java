@@ -94,6 +94,7 @@ public class TaskViewActivity extends AppCompatActivity {
                     }
 
                         parentTask.addChild(newTask);
+                    taskList.saveDatabase();
                     taskViewListFragment.refreshList();
 
                 }
@@ -108,6 +109,7 @@ public class TaskViewActivity extends AppCompatActivity {
                         parentTask = parentTask.getChildren().get(taskPositions.get(i));
                     }
                     parentTask.addChild(newTask);
+                    taskList.saveDatabase();
                     taskViewListFragment.refreshList();
                 }
             }

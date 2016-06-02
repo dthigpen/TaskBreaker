@@ -52,7 +52,7 @@ public class TaskViewListFragment extends ListFragment {
     public void onListItemClick(ListView listView, View v, int position, long id) {
         Intent intent = new Intent(getActivity(),TaskViewActivity.class);
 
-        ArrayList<Integer>newTaskPositions =new ArrayList(taskPositions);
+        ArrayList<Integer>newTaskPositions = new ArrayList(taskPositions);
 
         newTaskPositions.add(position);
         intent.putExtra(MainActivity.TASK_TITLE_EXTRA,taskAdapter.getItem(position).getName());
