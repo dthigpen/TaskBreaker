@@ -3,6 +3,7 @@ package com.davidthigs.david.taskbreaker;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
@@ -10,9 +11,12 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -50,24 +54,37 @@ public class TaskViewActivity extends AppCompatActivity {
         Context context = this;
         LinearLayout layout = new LinearLayout(context);
         layout.setOrientation(LinearLayout.VERTICAL);
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.setMarginStart(convertDpToPx(16));
+        params.setMarginEnd(convertDpToPx(16));
         final TextView titleLabel = new TextView(context);
         titleLabel.setText("Title:");
         titleLabel.setTextSize(26);
+        titleLabel.setTextColor(Color.BLACK);
+        titleLabel.setLayoutParams(params);
         layout.addView(titleLabel);
         final EditText titleBox = new EditText(context);
         titleBox.setText("");
         titleBox.setHint("Title");
+
+        titleBox.setLayoutParams(params);
+        titleBox.setSingleLine();
         layout.addView(titleBox);
         final TextView descriptionLabel = new TextView(context);
         descriptionLabel.setText("Description:");
+        descriptionLabel.setTextSize(26);
+        descriptionLabel.setTextColor(Color.BLACK);
+        //descriptionLabel.setLayoutParams(params);
         layout.addView(descriptionLabel);
         final EditText descriptionBox = new EditText(context);
         descriptionBox.setText("");
-        descriptionBox.setTextSize(26);
         descriptionBox.setHint("Optional");
+        descriptionBox.setMaxLines(2);
+        descriptionBox.setLayoutParams(params);
         layout.addView(descriptionBox);
 
-        dialog.setView(layout);
+        dialog.setView(layout,28,16,28,16);
+
         dialog.setNegativeButton("Cancel",new DialogInterface.OnClickListener(){
            @Override
             public void onClick(DialogInterface dialog,int which){
@@ -116,6 +133,11 @@ public class TaskViewActivity extends AppCompatActivity {
             });
         //createTaskDialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
         createTaskDialog = dialog.create();
+    }
+    public int convertDpToPx(int dp) {
+        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+        int px = Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
+        return px;
     }
 
 }
