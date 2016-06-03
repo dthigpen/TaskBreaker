@@ -1,14 +1,20 @@
 package com.davidthigs.david.taskbreaker;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
+
+
+
+
 
 /**
  * Created by David on 5/30/2016.
@@ -29,11 +35,14 @@ public class TaskAdapter extends ArrayAdapter<Task> {
         Task task = getItem(position);
         if(convertView == null){
             viewHolder = new ViewHolder();
-            convertView = LayoutInflater.from(getContext()).inflate(android.R.layout.simple_list_item_2,parent,false);
+             convertView = LayoutInflater.from(getContext()).inflate(android.R.layout.simple_list_item_2,parent,false);
 
             viewHolder.name = (TextView)convertView.findViewById(android.R.id.text1);
             viewHolder.description = (TextView)convertView.findViewById(android.R.id.text2);
-
+            if(task.getChecked()){
+                TextView text = (TextView) convertView.findViewById(android.R.id.text1);
+                text.setTextColor(Color.GRAY);
+            }
             convertView.setTag(viewHolder);
         }
         else{

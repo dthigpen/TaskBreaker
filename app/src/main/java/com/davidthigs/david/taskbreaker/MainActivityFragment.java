@@ -1,9 +1,11 @@
 package com.davidthigs.david.taskbreaker;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.provider.SyncStateContract;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
@@ -11,10 +13,13 @@ import android.support.v7.app.AlertDialog;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.EditText;
@@ -22,13 +27,14 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
 /**
  * A placeholder fragment containing a simple view.
  */
-public class MainActivityFragment extends ListFragment {
+public class MainActivityFragment extends ListFragment{
     private TaskAdapter taskAdapter;
     private TaskList taskList;
     private AlertDialog createTaskDialog;
@@ -38,22 +44,53 @@ public class MainActivityFragment extends ListFragment {
     public MainActivityFragment() {
     }
 
-
+    private static final int DEFAULT_THRESHOLD = 128;
     @Override
     public void onActivityCreated(Bundle bundle){
         super.onActivityCreated(bundle);
 
         taskList = (TaskList)getActivity().getApplicationContext();
 
-       taskAdapter = new TaskAdapter(getActivity(), taskList.getList());
+        taskAdapter = new TaskAdapter(getActivity(), taskList.getList());
         taskPositions= new ArrayList<>();
         setListAdapter(taskAdapter);
-        //addTaskDialog();
+
+        //TODO - Add Swipe action to check off list items
+
+        /*
+        ListView listView = getListView();
+        // Create a ListView-specific touch listener. ListViews are given special treatment because
+        // by default they handle touches for their list items... i.e. they're in charge of drawing
+        // the pressed state (the list selector), handling list item clicks, etc.
+        SwipeDismissListViewTouchListener touchListener =
+                new SwipeDismissListViewTouchListener(
+                        listView,
+                        new SwipeDismissListViewTouchListener.DismissCallbacks() {
+                            @Override
+                            public boolean canDismiss(int position) {
+                                return true;
+                            }
+
+                            @Override
+                            public void onDismiss(ListView listView, int[] reverseSortedPositions) {
+                                for (int position : reverseSortedPositions) {
+                                    taskList.getList().remove(position);
+
+                                }
+                                taskAdapter.notifyDataSetChanged();
+                            }
+                        });
+        listView.setOnTouchListener(touchListener);
+        // Setting this scroll listener is required to ensure that during ListView scrolling,
+        // we don't look for swipes.
+        listView.setOnScrollListener(touchListener.makeScrollListener());
+        */
         registerForContextMenu(getListView());
     }
     public void refreshList(){
         taskAdapter.notifyDataSetChanged();
     }
+
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo)
     {
@@ -70,8 +107,6 @@ public class MainActivityFragment extends ListFragment {
         //Task task = (Task)getListAdapter().getItem(rowPosition);
         switch (item.getItemId()){
             case R.id.edit:
-
-
                 taskName = taskList.getList().get(rowPosition).getName();
                 taskDescription = taskList.getList().get(rowPosition).getDescription();
                 addTaskDialog();
@@ -92,6 +127,7 @@ public class MainActivityFragment extends ListFragment {
 
         Intent intent = new Intent(getActivity(),TaskViewActivity.class);
 
+        taskPositions.clear();
         taskPositions.add(position);
 
         intent.putExtra(MainActivity.TASK_TITLE_EXTRA,taskAdapter.getItem(position).getName());

@@ -14,6 +14,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,6 +23,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -29,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
 
     public static final String TASK_TITLE_EXTRA = "TASK_TITLE_EXTRA";
     public static final String TASK_POSITION_EXTRA ="TASK_POSITION_EXTRA";
+
 
     private AlertDialog createTaskDialog;
     private MainActivityFragment mainActivityFragment;

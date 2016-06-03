@@ -16,6 +16,7 @@ public class Task implements Serializable{
     private String name;
     private String description;
     private ArrayList<Task> children;
+    private boolean isChecked;
 
     public Task(String name){
         this.name = name;
@@ -45,6 +46,13 @@ public class Task implements Serializable{
     public void setDescription(String description){
         this.description = description;
     }
+    public boolean getChecked(){
+        return isChecked;
+    }
+    public void setChecked(boolean isChecked){
+        this.isChecked = isChecked;
+    }
+
     public ArrayList<Task> getChildren(){
         return children;
     }
