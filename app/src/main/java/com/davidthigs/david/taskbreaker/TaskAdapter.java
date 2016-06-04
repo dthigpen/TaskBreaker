@@ -2,6 +2,7 @@ package com.davidthigs.david.taskbreaker;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,14 +40,24 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 
             viewHolder.name = (TextView)convertView.findViewById(android.R.id.text1);
             viewHolder.description = (TextView)convertView.findViewById(android.R.id.text2);
-            if(task.getChecked()){
-                TextView text = (TextView) convertView.findViewById(android.R.id.text1);
-                text.setTextColor(Color.GRAY);
-            }
+
             convertView.setTag(viewHolder);
         }
         else{
             viewHolder = (ViewHolder)convertView.getTag();
+        }
+        if(task.getChecked()){
+            TextView text1 = (TextView) convertView.findViewById(android.R.id.text1);
+            TextView text2 = (TextView) convertView.findViewById(android.R.id.text2);
+            text1.setTextColor(Color.GRAY);
+            text1.setPaintFlags(text1.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            text2.setTextColor(Color.GRAY);
+        }
+        else{
+            TextView text1 = (TextView) convertView.findViewById(android.R.id.text1);
+            TextView text2 = (TextView) convertView.findViewById(android.R.id.text2);
+            text1.setTextColor(Color.BLACK);
+            text2.setTextColor(Color.BLACK);
         }
         viewHolder.name.setText(task.getName());
         viewHolder.description.setText(task.getDescription());

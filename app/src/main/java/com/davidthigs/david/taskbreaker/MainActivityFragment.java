@@ -57,8 +57,46 @@ public class MainActivityFragment extends ListFragment{
 
         //TODO - Add Swipe action to check off list items
 
+        final ListView listView = getListView();
+        final SwipeDetector swipeDetector = new SwipeDetector();
+        listView.setOnTouchListener(swipeDetector);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+
+            @Override
+            public void onItemClick(AdapterView <? > parent, View view,
+                                    int position, long id) {
+
+                if (swipeDetector.swipeDetected()) {
+                    if (swipeDetector.getAction() == SwipeDetector.Action.LR) {
+
+                        Toast.makeText(getContext(),"Done!", Toast.LENGTH_SHORT).show();
+                        taskList.getList().get(position).setChecked(true);
+                        refreshList();
+                    }
+                    if (swipeDetector.getAction() == SwipeDetector.Action.RL) {
+
+                        Toast.makeText(getContext(),"Not Done!", Toast.LENGTH_SHORT).show();
+                        taskList.getList().get(position).setChecked(false);
+                        refreshList();
+                    }
+                }
+                else{
+                    Intent intent = new Intent(getActivity(),TaskViewActivity.class);
+
+                    taskPositions.clear();
+                    taskPositions.add(position);
+
+                    intent.putExtra(MainActivity.TASK_TITLE_EXTRA,taskAdapter.getItem(position).getName());
+                    intent.putExtra(MainActivity.TASK_POSITION_EXTRA,taskPositions);
+                    startActivity(intent);
+                }
+
+            }
+        });
         /*
-        ListView listView = getListView();
+
         // Create a ListView-specific touch listener. ListViews are given special treatment because
         // by default they handle touches for their list items... i.e. they're in charge of drawing
         // the pressed state (the list selector), handling list item clicks, etc.
