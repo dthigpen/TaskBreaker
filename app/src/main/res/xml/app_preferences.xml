@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:title="Tasks">
+
+        <CheckBoxPreference
+            android:title="Check off subtasks "
+            android:summary="Checking off a task will check off all tasks that it contains."
+            android:key="checkPriority"
+            android:defaultValue="false"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="Color">
+        <CheckBoxPreference
+            android:title="Dark Mode"
+            android:summary="Sets the color theme to dark. "
+            android:key="background_color"
+            android:defaultValue="false"/>
+    </PreferenceCategory>
+</PreferenceScreen>

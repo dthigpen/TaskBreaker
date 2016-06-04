@@ -4,7 +4,9 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.preference.PreferenceManager;
 import android.provider.SyncStateContract;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -41,6 +43,7 @@ public class MainActivityFragment extends ListFragment{
     private  ArrayList<Integer> taskPositions;
     private String taskName,taskDescription;
     private int rowPosition;
+    private boolean hasCheckedPriority;
     public MainActivityFragment() {
     }
 
@@ -54,8 +57,7 @@ public class MainActivityFragment extends ListFragment{
         taskAdapter = new TaskAdapter(getActivity(), taskList.getList());
         taskPositions= new ArrayList<>();
         setListAdapter(taskAdapter);
-
-        //TODO - Add Swipe action to check off list items
+        loadPreferences();
 
         final ListView listView = getListView();
         final SwipeDetector swipeDetector = new SwipeDetector();
@@ -95,34 +97,7 @@ public class MainActivityFragment extends ListFragment{
 
             }
         });
-        /*
 
-        // Create a ListView-specific touch listener. ListViews are given special treatment because
-        // by default they handle touches for their list items... i.e. they're in charge of drawing
-        // the pressed state (the list selector), handling list item clicks, etc.
-        SwipeDismissListViewTouchListener touchListener =
-                new SwipeDismissListViewTouchListener(
-                        listView,
-                        new SwipeDismissListViewTouchListener.DismissCallbacks() {
-                            @Override
-                            public boolean canDismiss(int position) {
-                                return true;
-                            }
-
-                            @Override
-                            public void onDismiss(ListView listView, int[] reverseSortedPositions) {
-                                for (int position : reverseSortedPositions) {
-                                    taskList.getList().remove(position);
-
-                                }
-                                taskAdapter.notifyDataSetChanged();
-                            }
-                        });
-        listView.setOnTouchListener(touchListener);
-        // Setting this scroll listener is required to ensure that during ListView scrolling,
-        // we don't look for swipes.
-        listView.setOnScrollListener(touchListener.makeScrollListener());
-        */
         registerForContextMenu(getListView());
     }
     public void refreshList(){
@@ -240,5 +215,12 @@ public class MainActivityFragment extends ListFragment{
         int px = Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
         return px;
     }
+    private void loadPreferences() {
 
-}
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        hasCheckedPriority = sharedPreferences.getBoolean("checkPriority", false);
+
+
+    }
+
+    }

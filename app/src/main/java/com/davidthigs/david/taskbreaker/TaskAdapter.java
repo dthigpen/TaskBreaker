@@ -1,8 +1,10 @@
 package com.davidthigs.david.taskbreaker;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.preference.PreferenceManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,12 +24,21 @@ import java.util.ArrayList;
  */
 public class TaskAdapter extends ArrayAdapter<Task> {
 
+    private boolean hasCheckedPriority;
     public static class ViewHolder{
         TextView name;
         TextView description;
     }
     public TaskAdapter(Context context, ArrayList<Task> tasks){
         super(context,0,tasks);
+        loadPreferences();
+    }
+    private void loadPreferences() {
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        hasCheckedPriority = sharedPreferences.getBoolean("checkPriority", false);
+
+
     }
     @Override
     public View getView(int position, View convertView, ViewGroup parent){
@@ -56,6 +67,7 @@ public class TaskAdapter extends ArrayAdapter<Task> {
         else{
             TextView text1 = (TextView) convertView.findViewById(android.R.id.text1);
             TextView text2 = (TextView) convertView.findViewById(android.R.id.text2);
+            text1.setPaintFlags(0);
             text1.setTextColor(Color.BLACK);
             text2.setTextColor(Color.BLACK);
         }
