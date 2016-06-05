@@ -25,18 +25,6 @@ public class TaskList extends Application {
             e.printStackTrace();
         }
         taskDbAdapter.close();
-        /*
-        list = new ArrayList<>();
-
-        list.add(new Task("task1"));
-        list.add(new Task("task2"));
-        list.add(new Task("task3"));
-        list.get(0).addChild(new Task("task1A"));
-        list.get(0).addChild(new Task("task1B"));
-        list.get(1).addChild(new Task("task2A"));
-        list.get(0).getChildren().get(0).addChild(new Task("fdgdg"));
-        saveDatabase();
-        */
     }
 
     public void saveDatabase(){

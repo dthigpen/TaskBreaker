@@ -31,7 +31,8 @@ public class MainActivity extends AppCompatActivity {
 
     public static final String TASK_TITLE_EXTRA = "TASK_TITLE_EXTRA";
     public static final String TASK_POSITION_EXTRA ="TASK_POSITION_EXTRA";
-
+    public static final String TASK_PARENT_CHECKED_EXTRA ="TASK_PARENT_CHECKED_EXTRA";
+    public static final String TASK_FOR_DIAGRAM_EXTRA ="TASK_FOR_DIAGRAM_EXTRA";
 
     private AlertDialog createTaskDialog;
     private MainActivityFragment mainActivityFragment;

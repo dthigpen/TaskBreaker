@@ -63,7 +63,11 @@ public class Task implements Serializable{
     public void addChild(Task child){
         children.add(child);
     }
-
+    public void removeChild(int position){
+        if(position>0&&position<children.size()){
+            children.remove(position);
+        }
+    }
     public JSONObject getJSONObject(){
         JSONObject jsonObject = new JSONObject();
         JSONArray jsonArray = new JSONArray();

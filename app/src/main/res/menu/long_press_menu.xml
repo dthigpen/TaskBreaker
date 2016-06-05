@@ -2,6 +2,9 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
+        android:id="@+id/diagram"
+        android:title="@string/diagram_menu"></item>
+    <item
         android:id="@+id/edit"
         android:title="@string/edit_menu"></item>
     <item

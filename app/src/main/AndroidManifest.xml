@@ -20,9 +20,15 @@
             </intent-filter>
         </activity>
         <activity android:name=".TaskViewActivity" />
-        <activity android:name=".AppPreferences"
+        <activity
+            android:name=".AppPreferences"
             android:label="@string/preferences_title"
-            android:parentActivityName=".MainActivity"></activity>
+            android:parentActivityName=".MainActivity" />
+        <activity android:name=".DiagramView"
+            android:label="Diagram View"
+            ></activity>
+
+
     </application>
 
 </manifest>

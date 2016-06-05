@@ -47,7 +47,6 @@ public class MainActivityFragment extends ListFragment{
     public MainActivityFragment() {
     }
 
-    private static final int DEFAULT_THRESHOLD = 128;
     @Override
     public void onActivityCreated(Bundle bundle){
         super.onActivityCreated(bundle);
@@ -73,15 +72,20 @@ public class MainActivityFragment extends ListFragment{
                 if (swipeDetector.swipeDetected()) {
                     if (swipeDetector.getAction() == SwipeDetector.Action.LR) {
 
-                        Toast.makeText(getContext(),"Done!", Toast.LENGTH_SHORT).show();
-                        taskList.getList().get(position).setChecked(true);
-                        refreshList();
+                        if(!taskAdapter.getItem(position).getChecked()) {
+                            Toast.makeText(getContext(), "Done!", Toast.LENGTH_SHORT).show();
+                            //taskList.getList().get(position).setChecked(true);
+                            taskAdapter.getItem(position).setChecked(true);
+                            refreshList();
+                        }
                     }
                     if (swipeDetector.getAction() == SwipeDetector.Action.RL) {
-
-                        Toast.makeText(getContext(),"Not Done!", Toast.LENGTH_SHORT).show();
-                        taskList.getList().get(position).setChecked(false);
-                        refreshList();
+                        if(taskAdapter.getItem(position).getChecked()) {
+                            Toast.makeText(getContext(), "Not Done!", Toast.LENGTH_SHORT).show();
+                            //taskList.getList().get(position).setChecked(false);
+                            taskAdapter.getItem(position).setChecked(false);
+                            refreshList();
+                        }
                     }
                 }
                 else{
@@ -119,6 +123,11 @@ public class MainActivityFragment extends ListFragment{
         rowPosition = info.position;
         //Task task = (Task)getListAdapter().getItem(rowPosition);
         switch (item.getItemId()){
+            case R.id.diagram:
+                Intent intent = new Intent(getActivity(),DiagramView.class);
+                intent.putExtra(MainActivity.TASK_FOR_DIAGRAM_EXTRA,taskAdapter.getItem(rowPosition));
+                startActivity(intent);
+                return true;
             case R.id.edit:
                 taskName = taskList.getList().get(rowPosition).getName();
                 taskDescription = taskList.getList().get(rowPosition).getDescription();
@@ -132,22 +141,6 @@ public class MainActivityFragment extends ListFragment{
                 break;
         }
         return super.onContextItemSelected(item);
-    }
-
-    @Override
-    public void onListItemClick(ListView listView,View v, int position,long id){
-        super.onListItemClick(listView,v,position,id);
-
-        Intent intent = new Intent(getActivity(),TaskViewActivity.class);
-
-        taskPositions.clear();
-        taskPositions.add(position);
-
-        intent.putExtra(MainActivity.TASK_TITLE_EXTRA,taskAdapter.getItem(position).getName());
-        intent.putExtra(MainActivity.TASK_POSITION_EXTRA,taskPositions);
-        startActivity(intent);
-
-
     }
 
     public void addTaskDialog() {

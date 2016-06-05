@@ -120,9 +120,14 @@ public class TaskViewListFragment extends ListFragment {
         rowPosition = info.position;
         //Task task = (Task)getListAdapter().getItem(rowPosition);
         switch (item.getItemId()){
+            case R.id.diagram:
+                Intent intent = new Intent(getActivity(),DiagramView.class);
+                intent.putExtra(MainActivity.TASK_FOR_DIAGRAM_EXTRA,taskAdapter.getItem(rowPosition));
+                startActivity(intent);
+                return true;
             case R.id.edit:
-                parentTask  = taskList.getList().get(taskPositions.get(0));
 
+                parentTask  = taskList.getList().get(taskPositions.get(0));
                 for(int i = 1;i<taskPositions.size();i++){
                     parentTask = parentTask.getChildren().get(taskPositions.get(i));
                 }
@@ -134,7 +139,9 @@ public class TaskViewListFragment extends ListFragment {
                 return true;
             case R.id.delete:
                 //TODO add confirmation dialog or snackbar undo
-                taskList.removeTask(rowPosition);
+
+                taskAdapter.remove(taskAdapter.getItem(rowPosition));
+                taskList.saveDatabase();
                 refreshList();
                 break;
         }
@@ -143,18 +150,7 @@ public class TaskViewListFragment extends ListFragment {
     public void refreshList(){
         taskAdapter.notifyDataSetChanged();
     }
-    @Override
-    public void onListItemClick(ListView listView, View v, int position, long id) {
-        Intent intent = new Intent(getActivity(),TaskViewActivity.class);
 
-        ArrayList<Integer>newTaskPositions = new ArrayList(taskPositions);
-
-        newTaskPositions.add(position);
-        intent.putExtra(MainActivity.TASK_TITLE_EXTRA,taskAdapter.getItem(position).getName());
-        intent.putExtra(MainActivity.TASK_POSITION_EXTRA,newTaskPositions);
-        startActivity(intent);
-
-    }
     public void addTaskDialog() {
 
         AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
@@ -210,10 +206,7 @@ public class TaskViewListFragment extends ListFragment {
 
                     parentTask.setName(titleBox.getText().toString());
                     parentTask.setDescription(descriptionBox.getText().toString());
-                    /*
-                    taskList.getList().get(rowPosition).setName(titleBox.getText().toString());
-                    taskList.getList().get(rowPosition).setDescription(descriptionBox.getText().toString());
-                    */
+
                     refreshList();
                 }
             }
