@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/pref_screen">
 
     <PreferenceCategory
         android:title="Tasks">
@@ -13,7 +14,8 @@
 
     <PreferenceCategory
         android:title="Color">
-        <CheckBoxPreference
+        <SwitchPreference
+            android:id="@+id/darkModeSwitch"
             android:title="Dark Mode"
             android:summary="Sets the color theme to dark. "
             android:key="background_color"

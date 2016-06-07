@@ -12,7 +12,6 @@ import android.support.v7.app.AlertDialog;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.ContextMenu;
-import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -126,7 +125,7 @@ public class TaskViewListFragment extends ListFragment {
                 startActivity(intent);
                 return true;
             case R.id.edit:
-
+                /*
                 parentTask  = taskList.getList().get(taskPositions.get(0));
                 for(int i = 1;i<taskPositions.size();i++){
                     parentTask = parentTask.getChildren().get(taskPositions.get(i));
@@ -134,6 +133,9 @@ public class TaskViewListFragment extends ListFragment {
                 parentTask = parentTask.getChildren().get(rowPosition);
                 taskName = parentTask.getName();
                 taskDescription = parentTask.getDescription();
+                */
+                taskName=taskAdapter.getItem(rowPosition).getName();
+                taskDescription=taskAdapter.getItem(rowPosition).getDescription();
                 addTaskDialog();
                 createTaskDialog.show();
                 return true;
@@ -204,9 +206,11 @@ public class TaskViewListFragment extends ListFragment {
 
                     //edit task
 
-                    parentTask.setName(titleBox.getText().toString());
-                    parentTask.setDescription(descriptionBox.getText().toString());
-
+                    //parentTask.setName(titleBox.getText().toString());
+                    //parentTask.setDescription(descriptionBox.getText().toString());
+                    taskAdapter.getItem(rowPosition).setName(titleBox.getText().toString());
+                    taskAdapter.getItem(rowPosition).setDescription(descriptionBox.getText().toString());
+                    taskList.saveDatabase();
                     refreshList();
                 }
             }

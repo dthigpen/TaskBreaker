@@ -1,27 +1,17 @@
 package com.davidthigs.david.taskbreaker;
 
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.preference.PreferenceManager;
-import android.provider.SyncStateContract;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.support.v7.app.AlertDialog;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.ContextMenu;
-import android.view.GestureDetector;
-import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.EditText;
@@ -49,6 +39,7 @@ public class MainActivityFragment extends ListFragment{
 
     @Override
     public void onActivityCreated(Bundle bundle){
+
         super.onActivityCreated(bundle);
 
         taskList = (TaskList)getActivity().getApplicationContext();
@@ -56,7 +47,7 @@ public class MainActivityFragment extends ListFragment{
         taskAdapter = new TaskAdapter(getActivity(), taskList.getList());
         taskPositions= new ArrayList<>();
         setListAdapter(taskAdapter);
-        loadPreferences();
+
 
         final ListView listView = getListView();
         final SwipeDetector swipeDetector = new SwipeDetector();
@@ -195,8 +186,11 @@ public class MainActivityFragment extends ListFragment{
                 else{
 
                     //edit task
-                    taskList.getList().get(rowPosition).setName(titleBox.getText().toString());
-                    taskList.getList().get(rowPosition).setDescription(descriptionBox.getText().toString());
+                    //taskList.getList().get(rowPosition).setName(titleBox.getText().toString());
+                    //taskList.getList().get(rowPosition).setDescription(descriptionBox.getText().toString());
+                    taskAdapter.getItem(rowPosition).setName(titleBox.getText().toString());
+                    taskAdapter.getItem(rowPosition).setDescription(descriptionBox.getText().toString());
+                    taskList.saveDatabase();
                     refreshList();
                 }
             }
@@ -207,13 +201,6 @@ public class MainActivityFragment extends ListFragment{
         DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
         int px = Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
         return px;
-    }
-    private void loadPreferences() {
-
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        hasCheckedPriority = sharedPreferences.getBoolean("checkPriority", false);
-
-
     }
 
     }

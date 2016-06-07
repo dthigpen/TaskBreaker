@@ -3,36 +3,36 @@ package com.davidthigs.david.taskbreaker;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
 public class TaskViewActivity extends AppCompatActivity {
     private AlertDialog createTaskDialog;
     private TaskViewListFragment taskViewListFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        loadPreferences();
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_task_view);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        taskViewListFragment = (TaskViewListFragment)getSupportFragmentManager().findFragmentById(R.id.task_children);
+        taskViewListFragment = (TaskViewListFragment) getSupportFragmentManager().findFragmentById(R.id.task_children);
         Intent intent = getIntent();
         String title = intent.getStringExtra(MainActivity.TASK_TITLE_EXTRA);
         setTitle(title);
@@ -83,61 +83,82 @@ public class TaskViewActivity extends AppCompatActivity {
         descriptionBox.setLayoutParams(params);
         layout.addView(descriptionBox);
 
-        dialog.setView(layout,28,16,28,16);
+        dialog.setView(layout, 28, 16, 28, 16);
 
-        dialog.setNegativeButton("Cancel",new DialogInterface.OnClickListener(){
-           @Override
-            public void onClick(DialogInterface dialog,int which){
+        dialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
                 createTaskDialog.cancel();
-           }
+            }
         });
-        dialog.setPositiveButton("Confirm" , new DialogInterface.OnClickListener() {
+        dialog.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                if(titleBox.getText().toString().trim().length() == 0){
+                if (titleBox.getText().toString().trim().length() == 0) {
                     titleBox.setError("Title is required!");
-                }
-                else if(descriptionBox.getText().toString().trim().length() == 0){
+                } else if (descriptionBox.getText().toString().trim().length() == 0) {
                     Task newTask = new Task(titleBox.getText().toString());
                     Intent intent = getIntent();
-                    ArrayList<Integer> taskPositions = (ArrayList<Integer>)intent.getExtras().getSerializable(MainActivity.TASK_POSITION_EXTRA);
-                    TaskList taskList = (TaskList)getApplicationContext();
+                    ArrayList<Integer> taskPositions = (ArrayList<Integer>) intent.getExtras().getSerializable(MainActivity.TASK_POSITION_EXTRA);
+                    TaskList taskList = (TaskList) getApplicationContext();
 
-                    Task parentTask  = taskList.getList().get(taskPositions.get(0));
+                    Task parentTask = taskList.getList().get(taskPositions.get(0));
 
-                    for(int i = 1;i<taskPositions.size();i++){
+                    for (int i = 1; i < taskPositions.size(); i++) {
                         parentTask = parentTask.getChildren().get(taskPositions.get(i));
                     }
 
-                        parentTask.addChild(newTask);
+                    parentTask.addChild(newTask);
                     taskList.saveDatabase();
                     taskViewListFragment.refreshList();
 
-                }
-                else{
-                    Task newTask = new Task(titleBox.getText().toString(),descriptionBox.getText().toString());
+                } else {
+                    Task newTask = new Task(titleBox.getText().toString(), descriptionBox.getText().toString());
                     Intent intent = getIntent();
-                    ArrayList<Integer> taskPositions = (ArrayList<Integer>)intent.getExtras().getSerializable(MainActivity.TASK_POSITION_EXTRA);
-                    TaskList taskList = (TaskList)getApplicationContext();
-                    Task parentTask  = taskList.getList().get(taskPositions.get(0));
+                    ArrayList<Integer> taskPositions = (ArrayList<Integer>) intent.getExtras().getSerializable(MainActivity.TASK_POSITION_EXTRA);
+                    TaskList taskList = (TaskList) getApplicationContext();
+                    Task parentTask = taskList.getList().get(taskPositions.get(0));
 
-                    for(int i = 1;i<taskPositions.size();i++){
+                    for (int i = 1; i < taskPositions.size(); i++) {
                         parentTask = parentTask.getChildren().get(taskPositions.get(i));
                     }
                     parentTask.addChild(newTask);
+
                     taskList.saveDatabase();
                     taskViewListFragment.refreshList();
                 }
             }
-            });
+        });
         //createTaskDialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
         createTaskDialog = dialog.create();
     }
+
     public int convertDpToPx(int dp) {
         DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
         int px = Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
         return px;
     }
 
+    private void loadPreferences() {
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean isDarkTheme = sharedPreferences.getBoolean(MainActivity.PREF_DARK_THEME, false);
+        if (isDarkTheme) {
+            setTheme(R.style.AppTheme_Dark);
+        } else {
+            setTheme(R.style.AppTheme);
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                this.onBackPressed();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 }

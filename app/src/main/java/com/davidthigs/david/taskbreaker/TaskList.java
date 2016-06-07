@@ -2,10 +2,8 @@ package com.davidthigs.david.taskbreaker;
 
 import android.app.Application;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
 /**

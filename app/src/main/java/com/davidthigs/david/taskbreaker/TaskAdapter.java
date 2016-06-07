@@ -5,13 +5,11 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.preference.PreferenceManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -25,6 +23,7 @@ import java.util.ArrayList;
 public class TaskAdapter extends ArrayAdapter<Task> {
 
     private boolean hasCheckedPriority;
+    private boolean isDarkTheme;
     public static class ViewHolder{
         TextView name;
         TextView description;
@@ -36,6 +35,7 @@ public class TaskAdapter extends ArrayAdapter<Task> {
     private void loadPreferences() {
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+
         hasCheckedPriority = sharedPreferences.getBoolean("checkPriority", false);
 
 
