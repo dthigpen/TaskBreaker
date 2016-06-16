@@ -15,10 +15,12 @@ public class TaskList extends Application {
     @Override
     public void onCreate(){
         super.onCreate();
+        list = new ArrayList<>();
         TaskDbAdapter taskDbAdapter = new TaskDbAdapter(getApplicationContext());
         taskDbAdapter.open();
         try{
             list = taskDbAdapter.getTasks();
+
         }catch (JSONException e){
             e.printStackTrace();
         }

@@ -34,6 +34,12 @@ public class Task implements Serializable{
         this.description = description;
         this.children = children;
     }
+    public Task(String name, String description,boolean isChecked,ArrayList<Task> children){
+        this.name = name;
+        this.description = description;
+        this.isChecked = isChecked;
+        this.children = children;
+    }
     public String getName(){
         return name;
     }
@@ -79,6 +85,7 @@ public class Task implements Serializable{
         try{
             jsonObject.put("name",name);
             jsonObject.put("description",description);
+            jsonObject.put("checked",isChecked);
             jsonObject.put("children",jsonArray);
         }catch (JSONException e){
             Log.d("JSON Exception","Task Object");

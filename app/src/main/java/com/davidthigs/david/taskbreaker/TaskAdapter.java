@@ -24,6 +24,7 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 
     private boolean hasCheckedPriority;
     private boolean isDarkTheme;
+    private boolean showNumbers;
     public static class ViewHolder{
         TextView name;
         TextView description;
@@ -37,6 +38,7 @@ public class TaskAdapter extends ArrayAdapter<Task> {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
 
         hasCheckedPriority = sharedPreferences.getBoolean("checkPriority", false);
+        isDarkTheme = sharedPreferences.getBoolean(MainActivity.PREF_DARK_THEME,false);
 
 
     }
@@ -57,22 +59,33 @@ public class TaskAdapter extends ArrayAdapter<Task> {
         else{
             viewHolder = (ViewHolder)convertView.getTag();
         }
+
         if(task.getChecked()){
             TextView text1 = (TextView) convertView.findViewById(android.R.id.text1);
             TextView text2 = (TextView) convertView.findViewById(android.R.id.text2);
             text1.setTextColor(Color.GRAY);
-            text1.setPaintFlags(text1.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            text1.setPaintFlags((text1.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG) | Paint.ANTI_ALIAS_FLAG);
             text2.setTextColor(Color.GRAY);
+
         }
         else{
             TextView text1 = (TextView) convertView.findViewById(android.R.id.text1);
             TextView text2 = (TextView) convertView.findViewById(android.R.id.text2);
-            text1.setPaintFlags(0);
-            text1.setTextColor(Color.BLACK);
-            text2.setTextColor(Color.BLACK);
+            text1.setPaintFlags(Paint.ANTI_ALIAS_FLAG);
+            text1.setTextColor(isDarkTheme?Color.WHITE:Color.BLACK);
+            text2.setTextColor(isDarkTheme?Color.WHITE:Color.BLACK);
+
         }
-        viewHolder.name.setText(task.getName());
-        viewHolder.description.setText(task.getDescription());
+        if(showNumbers){
+            viewHolder.name.setText(position+1+". "+ task.getName());
+            viewHolder.description.setText(task.getDescription());
+        }
+        else{
+            viewHolder.name.setText(task.getName());
+            viewHolder.description.setText(task.getDescription());
+        }
+
+
 
         return convertView;
     }

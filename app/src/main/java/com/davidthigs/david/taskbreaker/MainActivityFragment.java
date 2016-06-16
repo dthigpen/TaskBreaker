@@ -65,16 +65,17 @@ public class MainActivityFragment extends ListFragment{
 
                         if(!taskAdapter.getItem(position).getChecked()) {
                             Toast.makeText(getContext(), "Done!", Toast.LENGTH_SHORT).show();
-                            //taskList.getList().get(position).setChecked(true);
-                            taskAdapter.getItem(position).setChecked(true);
+                            taskList.getList().get(position).setChecked(true);
+                            taskList.saveDatabase();
                             refreshList();
                         }
                     }
                     if (swipeDetector.getAction() == SwipeDetector.Action.RL) {
                         if(taskAdapter.getItem(position).getChecked()) {
                             Toast.makeText(getContext(), "Not Done!", Toast.LENGTH_SHORT).show();
-                            //taskList.getList().get(position).setChecked(false);
-                            taskAdapter.getItem(position).setChecked(false);
+                            taskList.getList().get(position).setChecked(false);
+                            //taskAdapter.getItem(position).setChecked(false);
+                            taskList.saveDatabase();
                             refreshList();
                         }
                     }

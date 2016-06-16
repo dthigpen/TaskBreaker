@@ -20,18 +20,20 @@ import java.util.Collections;
 public class TaskDbAdapter {
 
     public static final String DATABASE_NAME = "tasks.db";
-    public static final int DATABASE_VERSION =1;
+    public static final int DATABASE_VERSION =2;
 
     public static final String TASK_LIST_TABLE ="task_list";
     public static final String COLUMN_TASK_ID = "_id";
     public static final String COLUMN_TASK_NAME = "name";
     public static final String COLUMN_TASK_DESCRIPTION="description";
+    public static final String COLUMN_TASK_IS_CHECKED="checked";
     public static final String COLUMN_TASK_CHILDREN = "children";
-    private String[] allColumns = {COLUMN_TASK_ID,COLUMN_TASK_NAME,COLUMN_TASK_DESCRIPTION,COLUMN_TASK_CHILDREN};
+    private String[] allColumns = {COLUMN_TASK_ID,COLUMN_TASK_NAME,COLUMN_TASK_DESCRIPTION,COLUMN_TASK_IS_CHECKED,COLUMN_TASK_CHILDREN};
     public static final String CREATE_TASK_LIST_TABLE ="create table "+TASK_LIST_TABLE+" ( "
             + COLUMN_TASK_ID + " integer primary key autoincrement, "
             + COLUMN_TASK_NAME + " text not null, "
-            + COLUMN_TASK_DESCRIPTION + " text not null, "
+            + COLUMN_TASK_DESCRIPTION + " text, "
+            + COLUMN_TASK_IS_CHECKED + " integer default 0, "
             + COLUMN_TASK_CHILDREN
             + ");";
 
@@ -67,27 +69,12 @@ public class TaskDbAdapter {
             ContentValues contentValues = new ContentValues();
             contentValues.put(COLUMN_TASK_NAME,tasks.get(i).getName());
             contentValues.put(COLUMN_TASK_DESCRIPTION,tasks.get(i).getDescription());
+            contentValues.put(COLUMN_TASK_IS_CHECKED,tasks.get(i).getChecked()?1:0);
             contentValues.put(COLUMN_TASK_CHILDREN,jsonArrayChildren.toString());
             long replaceId = sqlDB.replace(TASK_LIST_TABLE,null,contentValues);
 
         }
 
-
-        /*
-        //convert to json string
-        JSONArray jsonArray = new JSONArray();
-        if(tasks.size()>0){
-            for(int i = 0;i<tasks.size();i++){
-                jsonArray.put(tasks.get(i).getJSONObject());
-            }
-        }
-        contentValues.put(COLUMN_TASK_ARRAY_LIST,jsonArray.toString());
-
-        long insertId = sqlDB.insert(TASK_LIST_TABLE,null,contentValues);
-
-        //Cursor cursor = sqlDB.query(TASK_LIST_TABLE,allColumns,COLUMN_TASK_ID+" = "+insertId,null,null,null,null);
-        //cursor.moveToFirst()
-        */
     }
 
     public ArrayList<Task> getTasks() throws JSONException {
@@ -96,7 +83,7 @@ public class TaskDbAdapter {
         for(cursor.moveToLast();!cursor.isBeforeFirst();cursor.moveToPrevious()){
             tasks.add(cursorToTask(cursor));
         }
-        Collections.reverse(tasks)  ;
+        Collections.reverse(tasks);
         return tasks;
     }
     //TODO add update task function
@@ -104,12 +91,14 @@ public class TaskDbAdapter {
     public Task JSONObjectToTask(JSONObject jsonObject) throws JSONException{
         String name = jsonObject.getString("name");
         String description = jsonObject.getString("description");
+        boolean isChecked = jsonObject.getBoolean("checked");
         ArrayList<Task> children = new ArrayList<>();
         JSONArray jsonArray = jsonObject.getJSONArray("children");
         for(int i = 0;i < jsonArray.length();i++){
             children.add(JSONObjectToTask(jsonArray.getJSONObject(i)));
         }
         Task task = new Task(name,description,children);
+        task.setChecked(isChecked);
         return task;
     }
 
@@ -117,7 +106,8 @@ public class TaskDbAdapter {
 
         String name = cursor.getString(1);
         String description  = cursor.getString(2);
-        JSONArray jsonArray = new JSONArray(cursor.getString(3));
+        boolean isChecked = cursor.getInt(3)==1;
+        JSONArray jsonArray = new JSONArray(cursor.getString(4));
         ArrayList<Task> children = new ArrayList<>();
         for(int i = 0;i<jsonArray.length();i++){
             JSONObject jsonObject = jsonArray.getJSONObject(i);
@@ -125,7 +115,7 @@ public class TaskDbAdapter {
             children.add(childTask);
         }
         Task task = new Task(name,description,children);
-
+        task.setChecked(isChecked);
         return task;
     }
     private static class TaskDbHelper extends SQLiteOpenHelper
@@ -145,7 +135,7 @@ public class TaskDbAdapter {
                     "Upgrading database from version "+oldVersion +
                             " to " + newVersion + ", which will destroy all old data");
 
-            db.execSQL("DROP TABLE IF EXISTS "+CREATE_TASK_LIST_TABLE);
+            db.execSQL("DROP TABLE IF EXISTS "+TASK_LIST_TABLE);
             onCreate(db);
         }
     }
